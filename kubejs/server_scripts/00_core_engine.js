@@ -200,12 +200,18 @@
     }
 
     // ─────────────────────────────────────────────────────────────
-    // Currency (Emeralds)
+    // Currency (Isons)
     // ─────────────────────────────────────────────────────────────
     // Player.inventory in 1.20.1 has 41 slots: 0–35 main, 36–39 armor, 40 offhand.
-    // Armor slots can't hold emeralds in practice — the loop covers them harmlessly.
+    // Armor slots can't hold Isons in practice — the loop covers them harmlessly.
+    //
+    // Isons replace emeralds as the engine's currency. Emeralds are
+    // obtainable via villager trading, raid loot, and structure chests,
+    // which makes them exploitable for a player-driven economy. Isons
+    // are a custom item with no recipe and no loot table, so the only
+    // way they enter circulation is through systems this engine owns.
 
-    const CURRENCY_ID = 'minecraft:emerald';
+    const CURRENCY_ID = 'kubejs:ison';
     const INV_SIZE    = 41;
 
     function getBalance(player) {

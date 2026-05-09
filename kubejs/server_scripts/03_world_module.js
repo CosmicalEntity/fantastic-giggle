@@ -32,7 +32,7 @@
     const FACTION_NAME_MAX = 32;
     const BUSINESS_NAME_MAX = 48;
 
-    const WAR_KILL_BONUS   = 5;     // emeralds per kill in wartime
+    const WAR_KILL_BONUS   = 5;     // Isons per kill in wartime
     const PROGRESSION_INTERVAL_S = 600;   // 10 minutes of *active* play
     const PROGRESSION_CHANCE     = 0.20;  // 20% per interval — "tiny" but felt
     const ACTIVITY_GAP_MS        = 60_000; // counted active if moved within 60s
@@ -299,12 +299,12 @@
         if (!target) { err(player, 'Target not found.'); return 0; }
         if (player === target) { err(player, 'You cannot place a bounty on yourself.'); return 0; }
         if (amt <= 0) { err(player, 'Bounty must be a positive amount.'); return 0; }
-        if (RP.getBalance(player) < amt) { err(player, 'You need ' + amt + ' emeralds.'); return 0; }
+        if (RP.getBalance(player) < amt) { err(player, 'You need ' + amt + ' Isons.'); return 0; }
         const taken = RP.takeBalance(player, amt);
         if (taken !== amt) {
             // Refund partial — defensive; shouldn't normally happen.
             if (taken > 0) RP.giveBalance(player, taken);
-            err(player, 'Could not collect the emeralds.');
+            err(player, 'Could not collect the Isons.');
             return 0;
         }
 
@@ -317,7 +317,7 @@
         bounties[tu] = entry;
         saveBounties(player.server, bounties);
 
-        broadcast(player.server, Text.string('☠ A bounty of ' + entry.total + ' emeralds is on ' + RP.getRPName(target) + "'s head.")
+        broadcast(player.server, Text.string('☠ A bounty of ' + entry.total + ' Isons is on ' + RP.getRPName(target) + "'s head.")
             .color(C.BOUNTY).bold(true));
         return 1;
     }
@@ -329,7 +329,7 @@
         player.tell(Text.string('═══ Active Bounties ═══').color(C.BOUNTY).bold(true));
         for (let i = 0; i < keys.length; i++) {
             const b = bounties[keys[i]];
-            player.tell(Text.string('• ' + b.name + ' — ' + b.total + ' emeralds').color(C.BOUNTY));
+            player.tell(Text.string('• ' + b.name + ' — ' + b.total + ' Isons').color(C.BOUNTY));
         }
         return 1;
     }
@@ -342,7 +342,7 @@
             player.tell(Text.string(target.username + ' has no bounty.').color(C.BOUNTY));
             return 1;
         }
-        player.tell(Text.string(target.username + ' — ' + b.total + ' emeralds (' + b.placers.length + ' placer' + (b.placers.length === 1 ? '' : 's') + ')').color(C.BOUNTY));
+        player.tell(Text.string(target.username + ' — ' + b.total + ' Isons (' + b.placers.length + ' placer' + (b.placers.length === 1 ? '' : 's') + ')').color(C.BOUNTY));
         return 1;
     }
 
@@ -355,9 +355,9 @@
         delete bounties[tu];
         saveBounties(killer.server, bounties);
         RP.giveBalance(killer, reward);
-        RP.rpNotify(killer, 'Bounty claimed: ' + reward + ' emeralds.', 'Success');
+        RP.rpNotify(killer, 'Bounty claimed: ' + reward + ' Isons.', 'Success');
         broadcast(killer.server,
-            Text.string('☠ ' + RP.getRPName(killer) + ' collects the bounty on ' + RP.getRPName(target) + ' (' + reward + ' emeralds).')
+            Text.string('☠ ' + RP.getRPName(killer) + ' collects the bounty on ' + RP.getRPName(target) + ' (' + reward + ' Isons).')
                 .color(C.BOUNTY).bold(true));
         return reward;
     }
@@ -398,7 +398,7 @@
             created: Date.now()
         });
         saveBusinesses(player.server, list);
-        RP.rpNotify(player, 'Business "' + display + '" registered. Default wage: 10 emeralds/hour.', 'Success');
+        RP.rpNotify(player, 'Business "' + display + '" registered. Default wage: 10 Isons/hour.', 'Success');
         return 1;
     }
 
@@ -445,7 +445,7 @@
         if (!biz) { err(player, 'You do not run a business.'); return 0; }
         biz.wagePerHour = wage;
         saveBusinesses(player.server, list);
-        RP.rpNotify(player, 'Wage set to ' + wage + ' emeralds/hour.', 'Success');
+        RP.rpNotify(player, 'Wage set to ' + wage + ' Isons/hour.', 'Success');
         return 1;
     }
 
@@ -468,7 +468,7 @@
             total += pay;
         }
         if (total === 0) { err(player, 'No accrued wages to disburse.'); return 0; }
-        if (RP.getBalance(player) < total) { err(player, 'You need ' + total + ' emeralds to make payroll.'); return 0; }
+        if (RP.getBalance(player) < total) { err(player, 'You need ' + total + ' Isons to make payroll.'); return 0; }
         const taken = RP.takeBalance(player, total);
         if (taken !== total) {
             if (taken > 0) RP.giveBalance(player, taken);
@@ -481,10 +481,10 @@
             RP.giveBalance(o.target, o.pay);
             o.emp.accruedSeconds = 0;
             o.emp.lastPaidAt = Date.now();
-            RP.rpNotify(o.target, 'Wages received from ' + biz.name + ': ' + o.pay + ' emeralds.', 'Success');
+            RP.rpNotify(o.target, 'Wages received from ' + biz.name + ': ' + o.pay + ' Isons.', 'Success');
         }
         saveBusinesses(player.server, list);
-        RP.rpNotify(player, 'Payroll disbursed: ' + total + ' emeralds across ' + onlinePayouts.length + ' employees.', 'Success');
+        RP.rpNotify(player, 'Payroll disbursed: ' + total + ' Isons across ' + onlinePayouts.length + ' employees.', 'Success');
         return 1;
     }
 
@@ -496,7 +496,7 @@
         if (!ceoOf && !empOf) { err(player, 'You are not affiliated with a business.'); return 0; }
         if (ceoOf) {
             player.tell(Text.string('═══ ' + ceoOf.name + ' (CEO) ═══').color(C.BIZ).bold(true));
-            player.tell(Text.string('Wage: ' + ceoOf.wagePerHour + ' emeralds/hour    Employees: ' + ceoOf.employees.length).color(C.BIZ));
+            player.tell(Text.string('Wage: ' + ceoOf.wagePerHour + ' Isons/hour    Employees: ' + ceoOf.employees.length).color(C.BIZ));
             for (let i = 0; i < ceoOf.employees.length; i++) {
                 const e = ceoOf.employees[i];
                 const minutes = Math.floor(e.accruedSeconds / 60);
@@ -507,7 +507,7 @@
             const me = empOf.employees.find(e => e.uuid === u);
             const minutes = Math.floor(me.accruedSeconds / 60);
             player.tell(Text.string('═══ ' + empOf.name + ' (Employee) ═══').color(C.BIZ).bold(true));
-            player.tell(Text.string('Wage: ' + empOf.wagePerHour + ' emeralds/hour    Accrued: ' + minutes + ' min').color(C.BIZ));
+            player.tell(Text.string('Wage: ' + empOf.wagePerHour + ' Isons/hour    Accrued: ' + minutes + ' min').color(C.BIZ));
         }
         return 1;
     }
@@ -587,7 +587,7 @@
         const tf = RP.getFaction(target);
         if (kf && tf && areAtWar(killer.server, kf, tf)) {
             RP.giveBalance(killer, WAR_KILL_BONUS);
-            RP.rpNotify(killer, 'Wartime kill against ' + tf + ': +' + WAR_KILL_BONUS + ' emeralds.', 'Success');
+            RP.rpNotify(killer, 'Wartime kill against ' + tf + ': +' + WAR_KILL_BONUS + ' Isons.', 'Success');
         }
         // Bounty payout (always — independent of war)
         claimBounty(killer, target);
