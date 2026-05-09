@@ -352,11 +352,12 @@ ServerEvents.commandRegistry(event => {
     };
     const errSrc = (player, msg) => player.tell(Text.string(msg).color('#FF5555'));
 
-    // /whisper, /say, /yell — tiered proximity chat
-    const tiers = [['whisper', 'WHISPER'], ['say', 'SAY'], ['yell', 'YELL']];
-    for (let i = 0; i < tiers.length; i++) {
-        const cmd = tiers[i][0];
-        const tier = tiers[i][1];
+    // /whisper, /say, /yell — tiered proximity chat.
+    // IIFE per iteration: KubeJS's Rhino flattens `const` inside a plain
+    // for-body into function scope, so reusing the names cmd/tier across
+    // iterations triggers "redeclaration of var". A function call gives
+    // each registration its own captured binding.
+    function registerTier(cmd, tier) {
         event.register(
             Commands.literal(cmd)
                 .then(Commands.argument('message', Arguments.GREEDY_STRING.create(event))
@@ -366,6 +367,9 @@ ServerEvents.commandRegistry(event => {
                 )
         );
     }
+    registerTier('whisper', 'WHISPER');
+    registerTier('say',     'SAY');
+    registerTier('yell',    'YELL');
 
     // /me <action>
     event.register(

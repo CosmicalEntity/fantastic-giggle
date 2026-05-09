@@ -35,7 +35,7 @@
     const WAR_KILL_BONUS   = 5;     // Isons per kill in wartime
     const PROGRESSION_INTERVAL_S = 600;   // 10 minutes of *active* play
     const PROGRESSION_CHANCE     = 0.20;  // 20% per interval — "tiny" but felt
-    const ACTIVITY_GAP_MS        = 60_000; // counted active if moved within 60s
+    const ACTIVITY_GAP_MS        = 60000; // counted active if moved within 60s
 
     // Maps an activity counter to the stat it nudges.
     const ACTIVITY_STATS = {
@@ -185,7 +185,7 @@
         if (!c.contains('factionInvite')) { err(player, 'No active invitation.'); return 0; }
         const invited = c.getString('factionInvite');
         const sentAt  = c.getLong('factionInviteAt');
-        if (Date.now() - sentAt > 5 * 60_000) { err(player, 'That invitation expired.'); c.remove('factionInvite'); return 0; }
+        if (Date.now() - sentAt > 5 * 60000) { err(player, 'That invitation expired.'); c.remove('factionInvite'); return 0; }
         if (factionKey(invited) !== factionKey(name)) { err(player, 'Your invitation is for "' + invited + '".'); return 0; }
 
         const factions = loadFactions(player.server);
@@ -694,7 +694,7 @@ ServerEvents.tick(event => {
         if (moved) W._lastActiveAt[u] = now;
 
         const lastAt = W._lastActiveAt[u] || 0;
-        if ((now - lastAt) >= 60_000) continue; // AFK — don't accrue
+        if ((now - lastAt) >= 60000) continue; // AFK — don't accrue
         activeUuids[u] = true;
 
         // Activity counters that are derivable from current state

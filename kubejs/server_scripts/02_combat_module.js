@@ -29,8 +29,8 @@
     const DRAG_START_RANGE     = 4;
     const DRAG_BREAK_RANGE_SQ  = 144; // 12 blocks
     const DRAG_TICK_INTERVAL   = 4;   // 5 Hz
-    const DUEL_INVITE_MS       = 60_000;
-    const INJURY_DURATION_TICKS = 6_000;  // 5 minutes
+    const DUEL_INVITE_MS       = 60000;
+    const INJURY_DURATION_TICKS = 6000;  // 5 minutes
     const INJURY_DURATION_MS   = INJURY_DURATION_TICKS * 50;
     const COMBAT_LOG_PCT       = 0.05; // 5% of each stat (min loss = 1)
 
@@ -106,7 +106,7 @@
         pdataCompound(player).putBoolean('downed', true);
 
         // Long-lived effects; refreshed in the housekeeping tick if needed.
-        const D = 1_000_000; // ~13 hours, more than enough for any RP downtime
+        const D = 1000000; // ~13 hours, more than enough for any RP downtime
         player.potionEffects.add('minecraft:slowness',       D, 250, false, false);
         player.potionEffects.add('minecraft:blindness',      D, 1,   false, false);
         player.potionEffects.add('minecraft:weakness',       D, 250, false, false); // zeroes attack damage
