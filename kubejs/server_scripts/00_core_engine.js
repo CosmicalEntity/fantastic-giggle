@@ -200,6 +200,51 @@
     }
 
     // ─────────────────────────────────────────────────────────────
+    // Currency (Emeralds)
+    // ─────────────────────────────────────────────────────────────
+    // Player.inventory in 1.20.1 has 41 slots: 0–35 main, 36–39 armor, 40 offhand.
+    // Armor slots can't hold emeralds in practice — the loop covers them harmlessly.
+
+    const CURRENCY_ID = 'minecraft:emerald';
+    const INV_SIZE    = 41;
+
+    function getBalance(player) {
+        if (!player || !player.inventory) return 0;
+        const inv = player.inventory;
+        let total = 0;
+        for (let i = 0; i < INV_SIZE; i++) {
+            const s = inv.getItem(i);
+            if (s && !s.empty && s.id === CURRENCY_ID) total += s.count;
+        }
+        return total;
+    }
+
+    function takeBalance(player, amount) {
+        if (!player || amount <= 0) return 0;
+        const inv = player.inventory;
+        let remaining = amount;
+        for (let i = 0; i < INV_SIZE && remaining > 0; i++) {
+            const s = inv.getItem(i);
+            if (s && !s.empty && s.id === CURRENCY_ID) {
+                const take = Math.min(s.count, remaining);
+                s.shrink(take);
+                remaining -= take;
+            }
+        }
+        return amount - remaining;
+    }
+
+    function giveBalance(player, amount) {
+        if (!player || amount <= 0) return;
+        let remaining = amount;
+        while (remaining > 0) {
+            const chunk = Math.min(64, remaining);
+            player.give(Item.of(CURRENCY_ID, chunk));
+            remaining -= chunk;
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────
     // Initialisation
     // ─────────────────────────────────────────────────────────────
 
@@ -242,6 +287,11 @@
         setFaction: setFaction,
         // attributes
         applyAttributes: applyAttributes,
+        // currency
+        CURRENCY_ID:  CURRENCY_ID,
+        getBalance:   getBalance,
+        takeBalance:  takeBalance,
+        giveBalance:  giveBalance,
         // ui
         rpNotify: rpNotify,
         rpChat:   rpChat,
